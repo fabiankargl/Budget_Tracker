@@ -2,6 +2,7 @@ from ledger import Ledger
 from models import Transaction, Category
 from reports import ReportGenerator
 from categorymanager import CategoryManager
+from utils import select_category
 import readchar
 
 class BudgetApp:
@@ -54,22 +55,7 @@ class BudgetApp:
         amount = float(input("Betrag: "))
 
         categories = self.cat_manager.categories
-        index = 0
-
-        print("Kategorie mit Pfeiltasten auswählen und Enter drücken:")
-        while True:
-            for i, cat in enumerate(categories):
-                prefix = "-> " if i == index else "  "
-                print(f"{prefix}{cat}")
-            key = readchar.readkey()
-            if key == readchar.key.UP:
-                index = (index - 1) % len(categories)
-            elif key == readchar.key.DOWN:
-                index = (index + 1) % len(categories)
-            elif key == readchar.key.ENTER:
-                break
-
-            print("\033c", end="")
+        index = select_category(categories=categories)
         category = categories[index]
 
         try:
@@ -98,22 +84,7 @@ class BudgetApp:
 
     def remove_category(self):
         categories = self.cat_manager.categories
-        index = 0
-
-        print("Kategorie mit Pfeiltasten auswählen und Enter drücken:")
-        while True:
-            for i, cat in enumerate(categories):
-                prefix = "-> " if i == index else "  "
-                print(f"{prefix}{cat}")
-            key = readchar.readkey()
-            if key == readchar.key.UP:
-                index = (index - 1) % len(categories)
-            elif key == readchar.key.DOWN:
-                index = (index + 1) % len(categories)
-            elif key == readchar.key.ENTER:
-                break
-
-            print("\033c", end="")
+        index = select_category(categories=categories)
         category = categories[index]
 
         self.cat_manager.delete_category(category=category)
