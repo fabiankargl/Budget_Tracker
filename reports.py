@@ -11,20 +11,14 @@ def print_summary(ledger: Ledger):
 def get_monthly_report(ledger: Ledger, year: int, month: int):
     print(f"=== Monatlicher Report von {month}-{year} ===")
     print("Transaktionen:")
-    date_format = '%Y-%m-%d'
-    monthly_expenses = 0
-    monthly_income = 0
-    for t in ledger.transactions:
-        if not isinstance(t.date, date):
-            t_date = datetime.strptime(t.date, date_format)
-        else:
-            t_date = t.date
-        if t_date.year == year and t_date.month == month:
-            print(t)
-            if t.type == "expense":
-                monthly_expenses += t.amount
-            else:
-                monthly_income += t.amount
+    monthly_transactions = [
+        t for t in ledger.transactions
+        if (t_date := (t.date if isinstance(t.date, date) else datetime.strptime(t.date, '%Y-%m-%d'))).year == year
+        and t_date.month == month
+    ]
+
+    monthly_expenses = sum(t.amount for t in monthly_transactions if t.type == "expense")
+    monthly_income = sum(t.amount for t in monthly_transactions if t.type == "income")
     
     print(f"Einahmen: {monthly_income}")
     print(f"Ausgaben: {monthly_expenses}")

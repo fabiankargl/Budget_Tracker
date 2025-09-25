@@ -24,12 +24,7 @@ class Ledger:
         return income - expenses
     
     def get_transactions_by_category(self, category: str):
-        transactions = []
-        for t in self.transactions:
-            if t.category == category:
-                transactions.append(t)
-        
-        return transactions
+        return [t for t in self.transactions if t.category == category]
 
     def serialize_transaction(self, obj):
         if isinstance(obj, Transaction):
