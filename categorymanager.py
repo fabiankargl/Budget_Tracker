@@ -7,6 +7,12 @@ class CategoryManager:
 
         self.load_standard_categories()
 
+    def __len__(self):
+        return len(self.categories)
+    
+    def __getitem__(self, index):
+        return self.categories[index]
+
     def load_standard_categories(self):
         json_file_path = "categories.json"
 

@@ -6,6 +6,12 @@ class Ledger:
     def __init__(self):
         self.transactions = []
 
+    def __len__(self):
+        return len(self.transactions)
+    
+    def __getitem__(self, index: int):
+        return self.transactions[index]
+
     def add_transaction(self, transaction: Transaction):
         self.transactions.append(transaction)
     
