@@ -9,7 +9,7 @@ class ReportGenerator:
         print("=== Budget Summary ===")
         print(f"Balance: {self.ledger.get_balance()} €")
         print("Transaktionen:")
-        for t in self.ledger.transactions:
+        for t in self.ledger:
             print(" -", t)
 
     def get_monthly_report(self,
@@ -20,7 +20,7 @@ class ReportGenerator:
         date_format = '%Y-%m-%d'
         monthly_expenses = 0
         monthly_income = 0
-        for t in self.ledger.transactions:
+        for t in self.ledger:
             if not isinstance(t.date, date):
                 t_date = datetime.strptime(t.date, date_format)
             else:

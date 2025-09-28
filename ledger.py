@@ -5,31 +5,34 @@ from datetime import date
 class Ledger:
     def __init__(self):
         self.transactions = []
+        self._index = 0
+
+    def __iter__(self):
+        self._index = 0
+        return self
+    
+    def __next__(self):
+        if self._index < len(self.transactions):
+            result = self.transactions[self._index]
+            self._index += 1
+            return result
+        else:
+            raise StopIteration
 
     def add_transaction(self, transaction: Transaction):
         self.transactions.append(transaction)
 
     def get_balance(self):
         income = 0 
-        for t in self.transactions:
+        expenses = 0
+
+        for t in self:
             if t.type == "income":
-                income = income + t.amount
-
-        expenses = 0  
-        for t in self.transactions:
+                income += t.amount
             if t.type == "expense":
-                expenses = expenses + t.amount
-
+                expenses += t.amount
         return income - expenses
     
-    def get_transactions_by_category(self, category: str):
-        transactions = []
-        for t in self.transactions:
-            if t.category == category:
-                transactions.append(t)
-        
-        return transactions
-
     def serialize_transaction(self, obj):
         if isinstance(obj, Transaction):
             data = obj.__dict__.copy()

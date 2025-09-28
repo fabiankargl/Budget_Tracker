@@ -4,8 +4,18 @@ from models import Category
 class CategoryManager:
     def __init__(self):
         self.categories = []
-
         self.load_standard_categories()
+
+    def __iter__(self):
+        return iter(self.categories)
+    
+    def __next__(self):
+        if self._index < len(self.categories):
+            cat = self.categories[self._index]
+            self._index += 1
+            return cat
+        else:
+            raise StopIteration
 
     def load_standard_categories(self):
         json_file_path = "categories.json"

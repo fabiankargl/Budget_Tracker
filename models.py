@@ -1,5 +1,4 @@
 from datetime import date
-import json
 
 class Transaction:
     def __init__(self,
