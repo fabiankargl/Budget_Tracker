@@ -1,1 +1,10 @@
-[{"category": "Food", "limit": "150"}, {"category": "Entertaiment", "limit": "200"}]
+[
+  {
+    "category": "Food",
+    "limit": 150
+  },
+  {
+    "category": "Entertaiment",
+    "limit": 200
+  }
+]
