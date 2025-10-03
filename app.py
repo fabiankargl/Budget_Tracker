@@ -1,13 +1,13 @@
 from ledger import Ledger
 from models import Transaction, Category
-from reports import ReportGenerator
+from reports import get_monthly_report, print_summary
 from categorymanager import CategoryManager
+from utils import select_category
 import readchar
 
 class BudgetApp:
     def __init__(self):
         self.ledger = Ledger()
-        self.reporter = ReportGenerator(self.ledger)
         self.cat_manager = CategoryManager()
 
     def run(self):
@@ -30,7 +30,7 @@ class BudgetApp:
             elif choice == "2":
                 self.show_transactions()
             elif choice == "3":
-                self.reporter.print_summary()
+                print_summary(ledger=self.ledger)
             elif choice == "4": 
                 category_name = input("Neue Kategorie: ")
                 category_limit = input("Kategorie Limit (Optional): ")
@@ -42,7 +42,7 @@ class BudgetApp:
             elif choice == "6":
                 year = int(input("Jahr: "))
                 month = int(input("Monat: "))
-                self.reporter.get_monthly_report(year, month)
+                get_monthly_report(ledger=self.ledger, year=year, month=month)
             elif choice == "7":
                 print("Auf Wiedersehen!")
                 self.ledger.save_to_json()
@@ -54,22 +54,7 @@ class BudgetApp:
         amount = float(input("Betrag: "))
 
         categories = self.cat_manager.categories
-        index = 0
-
-        print("Kategorie mit Pfeiltasten auswählen und Enter drücken:")
-        while True:
-            for i, cat in enumerate(categories):
-                prefix = "-> " if i == index else "  "
-                print(f"{prefix}{cat}")
-            key = readchar.readkey()
-            if key == readchar.key.UP:
-                index = (index - 1) % len(categories)
-            elif key == readchar.key.DOWN:
-                index = (index + 1) % len(categories)
-            elif key == readchar.key.ENTER:
-                break
-
-            print("\033c", end="")
+        index = select_category(categories=categories)
         category = categories[index]
 
         try:
@@ -98,22 +83,7 @@ class BudgetApp:
 
     def remove_category(self):
         categories = self.cat_manager.categories
-        index = 0
-
-        print("Kategorie mit Pfeiltasten auswählen und Enter drücken:")
-        while True:
-            for i, cat in enumerate(categories):
-                prefix = "-> " if i == index else "  "
-                print(f"{prefix}{cat}")
-            key = readchar.readkey()
-            if key == readchar.key.UP:
-                index = (index - 1) % len(categories)
-            elif key == readchar.key.DOWN:
-                index = (index + 1) % len(categories)
-            elif key == readchar.key.ENTER:
-                break
-
-            print("\033c", end="")
+        index = select_category(categories=categories)
         category = categories[index]
 
         self.cat_manager.delete_category(category=category)

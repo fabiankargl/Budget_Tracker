@@ -6,29 +6,25 @@ class Ledger:
     def __init__(self):
         self.transactions = []
 
+    def __len__(self):
+        return len(self.transactions)
+    
+    def __getitem__(self, index: int):
+        return self.transactions[index]
+
     def add_transaction(self, transaction: Transaction):
         self.transactions.append(transaction)
+    
+    def _sum_transactions_by_type(self, t_type: str) -> float:
+        return sum(t.amount for t in self.transactions if t.type == t_type)
 
     def get_balance(self):
-        income = 0 
-        for t in self.transactions:
-            if t.type == "income":
-                income = income + t.amount
-
-        expenses = 0  
-        for t in self.transactions:
-            if t.type == "expense":
-                expenses = expenses + t.amount
-
+        income = self._sum_transactions_by_type("income")
+        expenses = self._sum_transactions_by_type("expense")
         return income - expenses
     
     def get_transactions_by_category(self, category: str):
-        transactions = []
-        for t in self.transactions:
-            if t.category == category:
-                transactions.append(t)
-        
-        return transactions
+        return [t for t in self.transactions if t.category == category]
 
     def serialize_transaction(self, obj):
         if isinstance(obj, Transaction):

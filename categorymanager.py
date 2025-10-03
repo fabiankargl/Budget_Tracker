@@ -7,17 +7,23 @@ class CategoryManager:
 
         self.load_standard_categories()
 
+    def __len__(self):
+        return len(self.categories)
+    
+    def __getitem__(self, index):
+        return self.categories[index]
+
     def load_standard_categories(self):
         json_file_path = "categories.json"
 
         with open(json_file_path) as f:
             categories = json.load(f)
 
-        for cat in categories:
-            if isinstance(cat, dict):
-                self.categories.append(Category(category_name=cat["category"], limit=cat["limit"]))
-            else:
-                self.categories.append(cat)
+        self.categories = [
+            Category(category_name=cat["category"], limit=cat["limit"]) if isinstance(cat, dict) else cat
+            for cat in categories
+        ]
+
 
     def save_categories(self):
         json_file_path = "categories.json"
