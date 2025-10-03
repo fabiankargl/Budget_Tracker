@@ -3,7 +3,6 @@ from models import Transaction, Category
 from reports import get_monthly_report, print_summary
 from categorymanager import CategoryManager
 from utils import select_category
-import readchar
 
 MENU_OPTIONS = {
     "1": "Neue Transaktion hinzufügen",
@@ -21,11 +20,6 @@ MSG_INVALID = "Ungültige Auswahl"
 MSG_NO_TRANSACTION = "Keine Transaktion vorhanden"
 MSG_SAVED = "Transaktion gespeichert"
 MSG_CAT_DELETED = "Kategorie erfolgreich gelöscht"
-
-
-KEY_UP = readchar.key.UP
-KEY_DOWN = readchar.key.DOWN
-KEY_ENTER = readchar.key.ENTER
 
 class BudgetApp:
     def __init__(self):
@@ -110,4 +104,4 @@ class BudgetApp:
     def monthly_report(self):
         year = int(input("Jahr: "))
         month = int(input("Monat: "))
-        self.reporter.get_monthly_report(year, month)
+        get_monthly_report(ledger=self.ledger, year=year, month=month)

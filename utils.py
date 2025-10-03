@@ -1,5 +1,9 @@
 import readchar
 
+KEY_UP = readchar.key.UP
+KEY_DOWN = readchar.key.DOWN
+KEY_ENTER = readchar.key.ENTER
+
 def select_category(categories) -> int:
     index = 0
 
@@ -9,11 +13,11 @@ def select_category(categories) -> int:
             prefix = "-> " if i == index else "  "
             print(f"{prefix}{cat}")
         key = readchar.readkey()
-        if key == readchar.key.UP:
+        if key == KEY_UP:
             index = (index - 1) % len(categories)
-        elif key == readchar.key.DOWN:
+        elif key == KEY_DOWN:
             index = (index + 1) % len(categories)
-        elif key == readchar.key.ENTER:
+        elif key == KEY_ENTER:
             break
 
         print("\033c", end="")
