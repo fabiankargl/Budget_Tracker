@@ -4,11 +4,9 @@ from reports import ReportGenerator
 from categorymanager import CategoryManager
 import readchar
 
+
 class BudgetApp:
     def __init__(self):
-        self.remove_category = None
-        self.show_transactions = None
-        self.add_transaction = None
         self.ledger = Ledger()
         self.reporter = ReportGenerator(self.ledger)
         self.cat_manager = CategoryManager()
@@ -26,15 +24,32 @@ class BudgetApp:
             print("6) Monatlicher Report")
             print("7) Beenden")
         """
+        # --- EINZIGE ÄNDERUNG: ACTIONS + richtiger Aufruf ---
         ACTIONS = {
             "1": self.add_transaction,
             "2": self.show_transactions,
             "3": self.reporter.print_summary,
-            "4": self.cat_manager.add_category,
+
+            # braucht Eingaben → per Lambda
+            "4": lambda: self.cat_manager.add_category(
+                Category(
+                    category_name=input("Neue Kategorie: ").strip(),
+                    limit=float((input("Kategorie Limit (Optional): ").strip().replace(",", ".")) or 0.0)
+                )
+            ),
+
             "5": self.remove_category,
-            "6": self.reporter.get_monthly_report,
-            "7": self.ledger.save_to_json(),
+
+            # braucht Jahr & Monat → per Lambda
+            "6": lambda: self.reporter.get_monthly_report(
+                int(input("Jahr: ").strip()),
+                int(input("Monat (1-12): ").strip())
+            ),
+
+            # speichern & beenden → per Lambda (ohne vorherigen Aufruf im Dict)
+            "7": lambda: (print("Auf Wiedersehen!"), self.ledger.save_to_json(), __import__("sys").exit(0)),
         }
+        # ----------------------------------------------------
 
         while True:
             print("\n=== Budget Tracker ===")
@@ -48,7 +63,7 @@ class BudgetApp:
 
             choice = input("Wähle: ").strip()
             action = ACTIONS.get(choice)
-            (ACTIONS.get(choice) or (lambda: print("Ungültige Auswahl")))
+            (action or (lambda: print("Ungültige Auswahl")))()  # <— AUFRUF mit ()
 
             def add_category_flow(self):
                 category_name = input("Neue Kategorie: ").strip()
@@ -111,8 +126,8 @@ class BudgetApp:
                 print("Auf Wiedersehen!")
                 self.ledger.save_to_json()
                 raise SystemExit(0)
-"""
-            if choice == "1":
+
+            """if choice == "1":
                 self.add_transaction()
             elif choice == "2":
                 self.show_transactions()
@@ -135,7 +150,7 @@ class BudgetApp:
                 self.ledger.save_to_json()
                 break
             else:
-                print("Ungültige Auswahl!")
+                print("Ungültige Auswahl!")"""
 
     def add_transaction(self):
         amount = float(input("Betrag: "))
@@ -176,7 +191,6 @@ class BudgetApp:
         self.ledger.add_transaction(transaction=t)
         print("Transaktion gespeichert")
 
-    
     def show_transactions(self):
         if not self.ledger.transactions:
             print("Keine Transaktionen vorhanden")
@@ -204,4 +218,4 @@ class BudgetApp:
         category = categories[index]
 
         self.cat_manager.delete_category(category=category)
-        print("Kategorie erfolgreich gelöscht")"""
+        print("Kategorie erfolgreich gelöscht")
